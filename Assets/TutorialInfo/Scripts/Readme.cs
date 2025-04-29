@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:baa133f5baae44c1217e10c64061f8fb7d56878477339d746470502165d35019
-size 318
+﻿using System;
+using UnityEngine;
+
+public class Readme : ScriptableObject
+{
+    public Texture2D icon;
+    public string title;
+    public Section[] sections;
+    public bool loadedLayout;
+
+    [Serializable]
+    public class Section
+    {
+        public string heading, text, linkText, url;
+    }
+}
