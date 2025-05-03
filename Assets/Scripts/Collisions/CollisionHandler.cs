@@ -67,12 +67,13 @@ public partial struct CollisionSimulationJob : ICollisionEventsJob
         bool bIsPuck = PuckLookup.HasComponent(entityB);
         if (!aIsPuck && !bIsPuck) return;
         
-        // Assigns entities based on which one the puck is (note that if both are pucks, both will need to do an event
+        // Assigns entities based on which one the puck is (note that if both are pucks, both will need to do an event)
         Entity puckEntity = aIsPuck ? entityA : entityB;
         Entity otherEntity = aIsPuck ? entityB : entityA;
         
         var normal = collisionEvent.Normal;
         
+        Debug.Log("Wall Collision!");
         if (PuckLookup.TryGetComponent(puckEntity, out var puck))
         {
             puck.ShouldReflect = true;

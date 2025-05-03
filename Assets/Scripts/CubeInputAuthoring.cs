@@ -30,6 +30,8 @@ namespace FlipperHockey
         public int Rotate;
 
         public InputEvent shoot;
+
+        public InputEvent spawnPuck;
     }
 
     /// <summary>
@@ -106,6 +108,15 @@ namespace FlipperHockey
                 else
                 {
                     playerInput.ValueRW.shoot = default;
+                }
+
+                if (spawnPuck)
+                {
+                    playerInput.ValueRW.spawnPuck.Set();
+                }
+                else
+                {
+                    playerInput.ValueRW.spawnPuck = default;
                 }
             }
         }

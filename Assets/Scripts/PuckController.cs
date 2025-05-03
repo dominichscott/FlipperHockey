@@ -27,20 +27,19 @@ namespace FlipperHockey
                         RefRW<LocalTransform>,
                         RefRW<Puck>>().WithEntityAccess().WithAll<Simulate>())
             {
-
-                // Reflect if collision happened
-                if (puck.ValueRO.ShouldReflect)
-                {
-                    puck.ValueRW.Direction = math.reflect(puck.ValueRO.Direction, puck.ValueRO.SurfaceNormal);
-                    puck.ValueRW.ShouldReflect = false; // reset after bounce
-                }
-
-                // Move bullet in its current direction
-                localTransform.ValueRW.Position += puck.ValueRO.Speed * puck.ValueRO.Direction * SystemAPI.Time.DeltaTime;
-
+                
                 if (state.World.IsServer())
                 {
-                    
+                    // Reflect if collision happened
+                    if (puck.ValueRO.ShouldReflect)
+                    {
+                        puck.ValueRW.Direction = math.reflect(puck.ValueRO.Direction, puck.ValueRO.SurfaceNormal);
+                        puck.ValueRW.ShouldReflect = false; // reset after bounce
+                    }
+
+                    //Debug.Log("Moving Puck " + puck.ValueRO.Direction + ", " + puck.ValueRO.Speed + ", " + SystemAPI.Time.DeltaTime);
+                    // Move puck in its current direction
+                    localTransform.ValueRW.Position += puck.ValueRO.Speed * puck.ValueRO.Direction * SystemAPI.Time.DeltaTime;
                 }
             }
 
