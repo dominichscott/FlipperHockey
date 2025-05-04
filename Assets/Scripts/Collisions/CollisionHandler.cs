@@ -16,21 +16,27 @@ partial struct CollisionHandler : ISystem
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<SimulationSingleton>();
+        state.RequireForUpdate<PuckManager>();
     }
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
+        var world = World.DefaultGameObjectInjectionWorld;
+        var entityManager = world.EntityManager;
+        Entity puckManagerEntity = entityManager
+            .CreateEntityQuery(typeof(PuckManagerState))
+            .GetSingletonEntity();
         
         CollisionSimulationJob simulationJob = new CollisionSimulationJob
         {
             PlayerHealthLookup = SystemAPI.GetComponentLookup<HealthComponent>(),
             //BulletLookup = SystemAPI.GetComponentLookup<Bullet>(),
-            HPBoxLookup = SystemAPI.GetComponentLookup<HPBox>(),
-            PowerBoxLookup = SystemAPI.GetComponentLookup<PowerBox>(),
-            PoweredUpComponentLookup = SystemAPI.GetComponentLookup<PoweredUpComponent>(),
+            SpeedBoxLookup = SystemAPI.GetComponentLookup<SpeedBox>(),
             LocalTransformLookup = SystemAPI.GetComponentLookup<LocalTransform>(),
             PuckLookup = SystemAPI.GetComponentLookup<Puck>(),
+            GoalLookup = SystemAPI.GetComponentLookup<Goal>(),
+            PuckManagerStateLookup = SystemAPI.GetComponentLookup<PuckManagerState>(),
         };
         state.Dependency = simulationJob.Schedule(
             SystemAPI.GetSingleton<SimulationSingleton>(), state.Dependency);
@@ -49,16 +55,17 @@ partial struct CollisionHandler : ISystem
 [BurstCompile]
 public partial struct CollisionSimulationJob : ICollisionEventsJob
 {
+    public Entity PuckManagerEntity;
     public ComponentLookup<HealthComponent> PlayerHealthLookup;
-    //public ComponentLookup<Bullet> BulletLookup;
-    public ComponentLookup<HPBox> HPBoxLookup;
-    public ComponentLookup<PowerBox> PowerBoxLookup;
-    public ComponentLookup<PoweredUpComponent> PoweredUpComponentLookup;
+    public ComponentLookup<SpeedBox> SpeedBoxLookup;
     public ComponentLookup<LocalTransform> LocalTransformLookup;
     public ComponentLookup<Puck> PuckLookup;
+    public ComponentLookup<Goal> GoalLookup;
+    public ComponentLookup<PuckManagerState> PuckManagerStateLookup;
 
     public void Execute(CollisionEvent collisionEvent)
     {
+        Debug.Log("Puck Collision!");
         Entity entityA = collisionEvent.EntityA;
         Entity entityB = collisionEvent.EntityB;
         
@@ -73,14 +80,35 @@ public partial struct CollisionSimulationJob : ICollisionEventsJob
         
         var normal = collisionEvent.Normal;
         
-        Debug.Log("Wall Collision!");
+        
         if (PuckLookup.TryGetComponent(puckEntity, out var puck))
         {
             puck.ShouldReflect = true;
             puck.SurfaceNormal = normal;
 
-            
-            if (LocalTransformLookup.TryGetComponent(otherEntity, out var otherTransform))
+            // If collision happens with the Speed Box
+            if (SpeedBoxLookup.TryGetComponent(otherEntity, out var otherSpeedBox))
+            {
+                if (otherSpeedBox.hasbeenPickedUp != 1)
+                {
+                    puck.Speed = puck.MaxSpeed;
+                    otherSpeedBox.hasbeenPickedUp = 1;
+                    otherSpeedBox.destroy = true;
+                    SpeedBoxLookup[otherEntity] = otherSpeedBox;
+                }
+            }
+            else if (GoalLookup.TryGetComponent(otherEntity, out var foundGoal))
+            {
+                puck.destroy = true;
+                // Change stat to indicate Puck has despawned
+                var puckManagerState = PuckManagerStateLookup[PuckManagerEntity];
+                puckManagerState.puckSpawned = false;
+                PuckManagerStateLookup[PuckManagerEntity] = puckManagerState;
+
+                
+                
+            }
+            else if (LocalTransformLookup.TryGetComponent(otherEntity, out var otherTransform))
             {
                 
             }

@@ -12,15 +12,15 @@ partial struct PickupManager : ISystem
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<PickupSpawner>();
-        state.RequireForUpdate<PickupSpawnerPowerUp>();
+        //state.RequireForUpdate<PickupSpawnerPowerUp>();
         state.RequireForUpdate<NetworkTime>();
     }
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var hpPrefab = SystemAPI.GetSingleton<PickupSpawner>().PickupObjAsEnt;
-        var powerPrefab = SystemAPI.GetSingleton<PickupSpawnerPowerUp>().PickupObjAsEnt;
+        var speedPrefab = SystemAPI.GetSingleton<PickupSpawner>().PickupObjAsEnt;
+        //var powerPrefab = SystemAPI.GetSingleton<PickupSpawnerPowerUp>().PickupObjAsEnt;
         
         EntityCommandBuffer ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
         NetworkTime networkTime = SystemAPI.GetSingleton<NetworkTime>();
@@ -38,8 +38,8 @@ partial struct PickupManager : ISystem
                 if (pickupSpawner.ValueRO.hasObject != 1)
                 {
                     
-                    Debug.LogWarning("Spawn HP Obj");
-                    Entity hpBoxEntity = ecb.Instantiate(hpPrefab);
+                    Debug.LogWarning("Spawn Speed Power Up Obj");
+                    Entity hpBoxEntity = ecb.Instantiate(speedPrefab);
 
 
                     ecb.SetComponent(hpBoxEntity, LocalTransform.FromPositionRotation(localTransform.ValueRO.Position, localTransform.ValueRO.Rotation));
@@ -49,6 +49,7 @@ partial struct PickupManager : ISystem
                 }
             }
         }
+        /*
         foreach ((
                      var pickupSpawnerPowerUp,
                      var localTransform)
@@ -73,6 +74,7 @@ partial struct PickupManager : ISystem
                 }
             }
         }
+        */
         ecb.Playback(state.EntityManager);
     }
 

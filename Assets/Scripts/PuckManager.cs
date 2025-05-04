@@ -9,15 +9,16 @@ using UnityEngine;
 namespace FlipperHockey
 {
     [UpdateInGroup(typeof(PredictedSimulationSystemGroup))]
-    partial struct PuckManager : ISystem
+    public partial struct PuckManager : ISystem
     {
-        public bool puckSpawned;
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<PuckSpawner>();
             state.RequireForUpdate<NetworkTime>();
-            puckSpawned = false;
+            
+            Entity stateEntity = state.EntityManager.CreateEntity();
+            state.EntityManager.AddComponentData(stateEntity, new PuckManagerState { puckSpawned = false });
         }
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
@@ -57,13 +58,15 @@ namespace FlipperHockey
                     }
                     */
 
-                    if (playerInput.ValueRO.spawnPuck.IsSet && !puckSpawned)
+                    var puckState = SystemAPI.GetSingletonRW<PuckManagerState>();
+                    
+                    if (playerInput.ValueRO.spawnPuck.IsSet && !puckState.ValueRO.puckSpawned)
                     {
                         Debug.Log("Spawning Puck");
                         Entity puckEntity = ecb.Instantiate(prefab);
 
                         int puckSelectionIndex = UnityEngine.Random.Range(0, puckSpawnPointList.Length);
-                        int puckDirectionIndex = UnityEngine.Random.Range(0, 1);
+                        int puckDirectionIndex = UnityEngine.Random.Range(0, 2);
                         float puckDirection = 0;
                         
                         if (puckDirectionIndex == 0)
@@ -75,11 +78,11 @@ namespace FlipperHockey
                             puckDirection = 1;
                         }
                         
-                        ecb.SetComponent(puckEntity, new Puck{ Direction = new float3( 0, 0, puckDirection), ShouldReflect = false, SurfaceNormal = new float3(0, 0, 0), Speed = 5f, MaxSpeed = 10f });
+                        ecb.SetComponent(puckEntity, new Puck{ Direction = new float3( 0, 0, puckDirection), ShouldReflect = false, SurfaceNormal = new float3(0, 0, 0), Speed = 5f, MaxSpeed = 10f, destroy = false});
                         ecb.SetComponent(puckEntity, LocalTransform.FromPositionRotation(puckSpawnPointList[puckSelectionIndex].Position, puckSpawnPointList[puckSelectionIndex].Rotation));
                         ecb.SetComponent(puckEntity, new GhostOwner { NetworkId = ghostOwner.ValueRO.NetworkId });
 
-                        puckSpawned = true;
+                        puckState.ValueRW.puckSpawned = true;
                     }
                 }
             }
@@ -89,5 +92,11 @@ namespace FlipperHockey
         public void OnDestroy(ref SystemState state)
         {
         }
+
+    }
+    
+    public struct PuckManagerState : IComponentData
+    {
+        public bool puckSpawned;
     }
 }

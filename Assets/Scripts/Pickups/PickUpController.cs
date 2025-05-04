@@ -23,14 +23,14 @@ namespace FlipperHockey
         public void OnUpdate(ref SystemState state)
         {
             EntityCommandBuffer ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
-            //cleanup HPBox
+            //cleanup SpeedBox
             foreach ((
                 RefRW<LocalTransform> localTransform,
-                RefRW<HPBox> hpBox,
+                RefRW<SpeedBox> speedBox,
                 Entity entity)
                 in SystemAPI.Query<
                     RefRW<LocalTransform>,
-                    RefRW<HPBox>>().WithEntityAccess().WithAll<Simulate>())
+                    RefRW<SpeedBox>>().WithEntityAccess().WithAll<Simulate>())
             {
                 //rotate object             
                 yDegrees += rSpeed;
@@ -39,9 +39,9 @@ namespace FlipperHockey
 
                 if (state.World.IsServer())
                 {
-                    if (hpBox.ValueRO.destroy)
+                    if (speedBox.ValueRO.destroy)
                     {
-                        Debug.Log("Destroying HPPickup");
+                        Debug.Log("Destroying SpeedPickup");
                         ecb.DestroyEntity(entity);
                     }
                 }

@@ -40,6 +40,12 @@ namespace FlipperHockey
                     //Debug.Log("Moving Puck " + puck.ValueRO.Direction + ", " + puck.ValueRO.Speed + ", " + SystemAPI.Time.DeltaTime);
                     // Move puck in its current direction
                     localTransform.ValueRW.Position += puck.ValueRO.Speed * puck.ValueRO.Direction * SystemAPI.Time.DeltaTime;
+                    
+                    // Destroys Puck if value is set to true
+                    if(puck.ValueRW.destroy)
+                    {
+                        ecb.DestroyEntity(entity);
+                    }
                 }
             }
 

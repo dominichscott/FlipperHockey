@@ -12,6 +12,7 @@ namespace FlipperHockey
         public float3 SurfaceNormal;
         public float Speed;
         public float MaxSpeed;
+        public bool destroy;
     }
 
     
@@ -30,6 +31,7 @@ namespace FlipperHockey
                     SurfaceNormal = new float3(0, 0, 0),
                     Speed = 5f,
                     MaxSpeed = 10f,
+                    destroy = false,
                 });
             }
         }

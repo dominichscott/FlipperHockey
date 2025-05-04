@@ -1,7 +1,6 @@
 using Unity.Entities;
 using FlipperHockey;
 using Unity.Collections;
-using Unity.Entities;
 using Unity.NetCode;
 using UnityEngine;
 
@@ -11,8 +10,7 @@ public struct HealthComponent : IComponentData
     [GhostField] public float CurrentHealth;
     [GhostField] public float MaxHealth;
     [GhostField] public float ownerNetworkID;
-    [GhostField] public float kills;
-    [GhostField] public float deaths;
+    [GhostField] public float score;
     [GhostField] public FixedString64Bytes playerName;
 }
 
@@ -32,8 +30,7 @@ public class HealthComponentAuthoring : MonoBehaviour
                 CurrentHealth = 100f,
                 MaxHealth = 100f,
                 ownerNetworkID = -1f,
-                kills = 0,
-                deaths = 0,
+                score = 0,
                 playerName = fixedString
             });
 

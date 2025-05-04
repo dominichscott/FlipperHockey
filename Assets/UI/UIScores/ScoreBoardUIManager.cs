@@ -34,16 +34,9 @@ public class ScoreBoardUIManager : MonoBehaviour
         });
         scoreBoard.columns.Add(new Column()
         {
-            title = "Deaths",
+            title = "Score",
             makeCell = MakeCellLabel,
-            bindCell = BindDeathsToCell,
-            stretchable = true,
-        });
-        scoreBoard.columns.Add(new Column()
-        {
-            title = "Kills",
-            makeCell = MakeCellLabel,
-            bindCell = BindKillsToCell,
+            bindCell = BindScoreToCell,
             stretchable = true,
         });
         BuildMockUpDisplay();
@@ -56,8 +49,8 @@ public class ScoreBoardUIManager : MonoBehaviour
     {
         var persons = new List<PlayerScore>()
             {
-                new PlayerScore("John", 20,2),
-                new PlayerScore("Jane", 23,2),
+                new PlayerScore("John", 2),
+                new PlayerScore("Jane", 3),
             };
         ApplyPersons(persons);
     }
@@ -71,14 +64,14 @@ public class ScoreBoardUIManager : MonoBehaviour
         // Check if we have any Ghost entities
         if (ghostQuery == null)
         {
-            Debug.Log("GQuery is null");
+            //Debug.Log("GQuery is null");
             ghostQuery = entityManager.CreateEntityQuery(typeof(HealthComponent));
         }
         //get list of entities
         var entities = ghostQuery.ToEntityArray(Unity.Collections.Allocator.Temp);
         if (entities.Length > 0)
         {
-            Debug.Log("# Ents: "+entities.Length);
+            //Debug.Log("# Ents: "+entities.Length);
             foreach (Entity ent in entities)
             {
                 var healthComponent = entityManager.GetComponentData<HealthComponent>(ent);
@@ -86,7 +79,7 @@ public class ScoreBoardUIManager : MonoBehaviour
                 var scores = new List<PlayerScore>()
                 {
 
-                    new PlayerScore(""+healthComponent.ownerNetworkID, (int)healthComponent.deaths,(int) healthComponent.kills),
+                    new PlayerScore(""+healthComponent.ownerNetworkID, (int)healthComponent.score),
                 };
                 ApplyPersons(scores);
             }
@@ -103,18 +96,12 @@ public class ScoreBoardUIManager : MonoBehaviour
         label.text = person.playerName;
     }
 
-    private void BindDeathsToCell(VisualElement element, int index)
+    private void BindScoreToCell(VisualElement element, int index)
     {
         var label = (Label)element;
         var playerScore = (PlayerScore)scoreBoard.viewController.GetItemForIndex(index);
-        label.text = ""+playerScore.deaths;
+        label.text = ""+playerScore.score;
     }
-
-    private void BindKillsToCell(VisualElement element, int index)
-    {
-        var label = (Label)element;
-        var playerScore = (PlayerScore)scoreBoard.viewController.GetItemForIndex(index);
-        label.text = "" + playerScore.kills;
-    }
+    
 }
 

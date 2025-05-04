@@ -29,7 +29,7 @@ namespace FlipperHockey
 
         public int Rotate;
 
-        public InputEvent shoot;
+        //public InputEvent shoot;
 
         public InputEvent spawnPuck;
     }
@@ -100,7 +100,8 @@ namespace FlipperHockey
                     playerInput.ValueRW.Rotate -= 1;
                 if (rRight)
                     playerInput.ValueRW.Rotate += 1;
-
+                
+                /*
                 if (shootKey)
                 {
                     playerInput.ValueRW.shoot.Set();
@@ -109,7 +110,7 @@ namespace FlipperHockey
                 {
                     playerInput.ValueRW.shoot = default;
                 }
-
+                */
                 if (spawnPuck)
                 {
                     playerInput.ValueRW.spawnPuck.Set();
@@ -138,7 +139,7 @@ namespace FlipperHockey
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            var speed = SystemAPI.Time.DeltaTime * 4;
+            var speed = SystemAPI.Time.DeltaTime * 6;
             var rSpeed = SystemAPI.Time.DeltaTime * 150;
             var backCamOffset = 0;
             var rightCamOffset = 0;

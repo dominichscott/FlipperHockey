@@ -79,16 +79,9 @@ partial class ScoreBoardSystem : SystemBase
             });
             scoreboard.columns.Add(new Column()
             {
-                title = "Deaths",
+                title = "Score",
                 makeCell = MakeCellLabel,
-                bindCell = BindDeathsToCell,
-                stretchable = true,
-            });
-            scoreboard.columns.Add(new Column()
-            {
-                title = "Kills",
-                makeCell = MakeCellLabel,
-                bindCell = BindKillsToCell,
+                bindCell = BindScoreToCell,
                 stretchable = true,
             });
 
@@ -112,7 +105,7 @@ partial class ScoreBoardSystem : SystemBase
             }
            
             cnt++;
-            PlayerScore tmp = new PlayerScore(""+ healthComp.playerName, (int)healthComp.kills, (int)healthComp.deaths);
+            PlayerScore tmp = new PlayerScore(""+ healthComp.playerName, (int)healthComp.score);
             scores.Add(tmp);
             
 
@@ -135,30 +128,21 @@ partial class ScoreBoardSystem : SystemBase
         label.text = person.playerName;
     }
 
-    private void BindDeathsToCell(VisualElement element, int index)
+    private void BindScoreToCell(VisualElement element, int index)
     {
         var label = (Label)element;
         var playerScore = (PlayerScore)scoreboard.viewController.GetItemForIndex(index);
-        label.text = "" + playerScore.deaths;
-    }
-
-    private void BindKillsToCell(VisualElement element, int index)
-    {
-        var label = (Label)element;
-        var playerScore = (PlayerScore)scoreboard.viewController.GetItemForIndex(index);
-        label.text = "" + playerScore.kills;
+        label.text = "" + playerScore.score;
     }
 }
 public class PlayerScore
 {
     public string playerName;
-    public int kills;
-    public int deaths;
+    public int score;
 
-    public PlayerScore(string pName, int kill, int death)
+    public PlayerScore(string pName, int score)
     {
         playerName = pName;
-        kills = kill;
-        deaths = death;
+        this.score = score;
     }
 }
