@@ -3153,7 +3153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8840524423754fb6870e25e7ff5e6ada, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  setGoalID: 1
+  setGoalID: 0
 --- !u!114 &1806524234
 MonoBehaviour:
   m_ObjectHideFlags: 0
