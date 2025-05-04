@@ -9,11 +9,11 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/NetcodeForEntitiesSetup/Scenes/Gameplay.unity
-    guid: bbe16513173705047943af17e8d3489f
-  - enabled: 1
     path: Assets/Scenes/TitleScene.unity
     guid: 540df555e3375704ca16a4a91ae8ca2d
+  - enabled: 1
+    path: Assets/NetcodeForEntitiesSetup/Scenes/Gameplay.unity
+    guid: bbe16513173705047943af17e8d3489f
   - enabled: 1
     path: Assets/Scenes/MainGameScene.unity
     guid: 73bdbe0724036074883fa63c91b0aaa5
